@@ -28,10 +28,14 @@ def get_pipes():
 
 def predict_batch(titles: list[str], abstracts: list[str]) -> list[dict]:
     """
-    Ensemble inference across all cross-validation folds.
+    Ensemble inference across all cross-validation folds for multi-label classification.
+
+    For multi-label models, each label is predicted independently (sigmoid activation),
+    so multiple labels can be active simultaneously with their own probabilities.
+
     Returns a dict per text with:
-      - score: ensemble probability of the POSITIVE class (0..1)
-      - all:   full list of {label, score} for debugging/inspection
+      - scores: dict mapping each label to its ensemble probability (0..1)
+      - all:    full list of {label, score} for all classes
     """
     pipes = get_pipes()
 
@@ -39,7 +43,6 @@ def predict_batch(titles: list[str], abstracts: list[str]) -> list[dict]:
     texts = [f"{title}. {abstract}".strip() for title, abstract in zip(titles, abstracts)]
 
     # Collect predictions from all folds
-    # For single-label models (num_labels=1), pipeline returns sigmoid of logit as the score
     all_fold_predictions = []
     for pipe in pipes:
         outputs = pipe(
@@ -47,25 +50,50 @@ def predict_batch(titles: list[str], abstracts: list[str]) -> list[dict]:
             truncation=True,
             max_length=settings.MAX_TOKENS,
             padding=True,
+            top_k=None,  # Return scores for all labels (multi-label: each label independent)
         )
         all_fold_predictions.append(outputs)
 
-    # Ensemble: average predictions across folds
+    # Ensemble: average predictions across folds for each label
     results = []
     for text_idx in range(len(texts)):
-        fold_scores = []
-        for fold_outputs in all_fold_predictions:
-            # For single-label models, score field contains the positive probability
-            output = fold_outputs[text_idx]
-            pos_score = float(output.get("score", 0.0))
-            fold_scores.append(pos_score)
+        # Collect scores for each label across all folds
+        label_scores = {}  # {label: [score_fold1, score_fold2, ...]}
 
-        # Average across folds
-        ensemble_score = sum(fold_scores) / len(fold_scores)
+        for fold_outputs in all_fold_predictions:
+            # For multi-label models with top_k=None, output is a list of {label, score} dicts
+            # Each label has an independent probability (0-1) from sigmoid activation
+            output = fold_outputs[text_idx]
+            if isinstance(output, list):
+                for item in output:
+                    label = item["label"]
+                    score = float(item["score"])
+                    if label not in label_scores:
+                        label_scores[label] = []
+                    label_scores[label].append(score)
+            else:
+                # Fallback for single prediction (shouldn't happen with top_k=None)
+                label = output.get("label", "LABEL_0")
+                score = float(output.get("score", 0.0))
+                if label not in label_scores:
+                    label_scores[label] = []
+                label_scores[label].append(score)
+
+        # Average scores across folds for each label
+        ensemble_scores = {
+            label: sum(scores) / len(scores)
+            for label, scores in label_scores.items()
+        }
+
+        # Build the output format
+        all_labels = [
+            {"label": label, "score": score}
+            for label, score in sorted(ensemble_scores.items())
+        ]
 
         results.append({
-            "score": ensemble_score,
-            "all": [{"label": "LABEL_0", "score": ensemble_score}]
+            "scores": ensemble_scores,
+            "all": all_labels
         })
 
     return results

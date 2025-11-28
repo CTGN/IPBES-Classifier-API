@@ -18,8 +18,6 @@ services:
     image: redis:7
     container_name: api-redis-1
     restart: unless-stopped
-    ports:
-      - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -38,16 +36,14 @@ services:
     environment:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/0
-      MONGO_URI: mongodb://mongo:27017/biomoqa-triage
-      MONGO_DB: biomoqa-triage
-      APP_NAME: BioMoQA-Triage API
+      MONGO_URI: mongodb://mongo:27017/ipbes-triage
+      MONGO_DB: ipbes-triage
+      APP_NAME: IPBES-Triage API
       HF_MODEL_BASE_DIR: /models/checkpoints
       HF_MODEL_PREFIX: best_model_cross_val_BCE_roberta-base
       HF_NUM_FOLDS: "5"
-      HF_DEVICE: "0"   # GPU enabled for ensemble
+      HF_DEVICE: "-1"   # CPU for ensemble
       MAX_TOKENS: "512"
-      NVIDIA_VISIBLE_DEVICES: all
-      NVIDIA_DRIVER_CAPABILITIES: compute,utility
     volumes:
       - ../model/checkpoints:/models/checkpoints:ro
     depends_on:
@@ -55,7 +51,6 @@ services:
         condition: service_healthy
       mongo:
         condition: service_healthy
-    runtime: nvidia
     command:
       [
         "celery", "-A", "app.worker.celery_app:app", "worker",
@@ -87,11 +82,11 @@ services:
     container_name: api-api-1
     restart: unless-stopped
     environment:
-      APP_NAME: BioMoQA-Triage API
+      APP_NAME: IPBES-Triage API
       API_PREFIX: /api/v1
       CORS_ORIGINS: http://localhost:3000,http://localhost:8501
-      MONGO_URI: mongodb://mongo:27017/biomoqa-triage
-      MONGO_DB: biomoqa-triage
+      MONGO_URI: mongodb://mongo:27017/ipbes-triage
+      MONGO_DB: ipbes-triage
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/0

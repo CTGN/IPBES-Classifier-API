@@ -2,12 +2,12 @@ import os
 from pydantic import BaseModel
 
 class Settings(BaseModel):
-    APP_NAME: str = "BioMoQA-Triage API"
+    APP_NAME: str = "IPBES-Triage API"
     API_PREFIX: str = os.getenv("API_PREFIX", "/api/v1")
     ENV: str = os.getenv("ENV", "development")
 
-    MONGO_URI: str = os.getenv("MONGO_URI", "mongodb://mongo:27017/biomoqa-triage")
-    MONGO_DB: str = os.getenv("MONGO_DB", "biomoqa-triage")
+    MONGO_URI: str = os.getenv("MONGO_URI", "mongodb://mongo:27017/ipbes-triage")
+    MONGO_DB: str = os.getenv("MONGO_DB", "ipbes-triage")
 
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://redis:6379/0")
     CELERY_BROKER_URL: str = os.getenv("CELERY_BROKER_URL", REDIS_URL)
@@ -27,7 +27,7 @@ class Settings(BaseModel):
 
     # Ensemble configuration
     HF_MODEL_BASE_DIR: str = os.getenv("HF_MODEL_BASE_DIR", "/models/checkpoints")
-    HF_MODEL_PREFIX: str = os.getenv("HF_MODEL_PREFIX", "best_model_cross_val_BCE_roberta-base")
+    HF_MODEL_PREFIX: str = os.getenv("HF_MODEL_PREFIX", "best_model_cross_val_BCE_biobert-v1")
     HF_NUM_FOLDS: int = int(os.getenv("HF_NUM_FOLDS", "5"))
 
     # Hard cap for tokenizer (tokens). Keeps pipeline from complaining about missing max length.

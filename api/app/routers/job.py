@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, field_validator, ConfigDict
@@ -93,7 +93,7 @@ async def create_job(payload: JobCreate):
 
 class ArticleOut(BaseModel):
     pmid: int
-    score: float = 0.0
+    scores: Dict[str, float] = {}
     pmcid: Optional[str] = None
     text_source: Optional[str] = None
     text: Optional[str] = None
@@ -121,21 +121,23 @@ async def get_job(job_id: str):
 
     items: List[ArticleOut] = []
     for d in docs:
-        score = 0.0
+        scores = {}
         text_source = "abstract"
         if d.predictions:
-            #Why list ?
             if isinstance(d.predictions, list) and d.predictions:
-                s = d.predictions[0].get("score", 0.0)
-                score = float(s)
+                # Legacy format or list of predictions
+                pred = d.predictions[0]
+                if isinstance(pred, dict):
+                    scores = pred.get("scores", {})
             elif isinstance(d.predictions, dict):
-                score = float(d.predictions.get("score", 0.0))
+                # New format with scores dict
+                scores = d.predictions.get("scores", {})
         if d.pmc_text:
             text_source = "fulltext"
 
         items.append(ArticleOut(
             pmid=d.pmid,
-            score=score,
+            scores=scores,
             pmcid=d.pmcid,
             text_source=text_source,
             text=d.text_for_infer or None

@@ -1,1 +1,1 @@
-# BioMoQA-Triage API package
+# IPBES-Triage API package

@@ -1,6 +1,6 @@
-# BioMoQA-Triage API
+# IPBES-Triage API
 
-A FastAPI + Celery + MongoDB + Redis pipeline for **BioMoQA-Triage** using an ensemble of fine-tuned RoBERTa models.  
+A FastAPI + Celery + MongoDB + Redis pipeline for **IPBES-Triage** using an ensemble of fine-tuned RoBERTa models.  
 
 ---
 
@@ -49,8 +49,8 @@ Environment variables (via `.env` or `docker-compose`):
 
 | Variable              | Default                                          | Description                   |
 |-----------------------|--------------------------------------------------|-------------------------------|
-| `MONGO_URI`           | `mongodb://mongo:27017/biomoqa-triage`           | MongoDB connection            |
-| `MONGO_DB`            | `biomoqa-triage`                                 | Database name                 |
+| `MONGO_URI`           | `mongodb://mongo:27017/ipbes-triage`           | MongoDB connection            |
+| `MONGO_DB`            | `ipbes-triage`                                 | Database name                 |
 | `REDIS_URL`           | `redis://redis:6379/0`                           | Redis broker                  |
 | `HF_MODEL_BASE_DIR`   | `/models/checkpoints`                            | Base directory for models     |
 | `HF_MODEL_PREFIX`     | `best_model_cross_val_BCE_roberta-base`          | Model filename prefix         |
