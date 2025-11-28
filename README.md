@@ -1,14 +1,14 @@
-# BioMoQA-Triage
+# IPBES-Triage
 
-BioMoQA-Triage is a pipeline for **DisProt literature triage**, combining
-**FastAPI**, **Celery**, **MongoDB**, and **Redis** with a fine-tuned PubMedBERT model.
+IPBES-Triage is a pipeline for **literature triage**, combining
+**FastAPI**, **Celery**, **MongoDB**, and **Redis** with an ensemble of fine-tuned RoBERTa models.
 
 ---
 
 ## Repository Structure
 
 ```
-BioMoQA-api/
+IPBES-api/
 ├── api/                      # API service (FastAPI + Celery workers)
 ├── model/                    # Model checkpoints (downloaded via script)
 ├── download_checkpoints.sh   # Script to download model checkpoints
@@ -29,15 +29,16 @@ BioMoQA-api/
 
 ### Download Model Checkpoints
 
-Before running the API, you need to download the fine-tuned PubMedBERT model checkpoints:
+Before running the API, you need to download the fine-tuned RoBERTa ensemble model checkpoints:
 
 ```bash
 ./download_checkpoints.sh
 ```
 
 This script will:
-- Download model checkpoints from the S3 bucket
+- Download 5 cross-validation fold model checkpoints from the S3 bucket
 - Store them in `model/checkpoints/`
+- Models are based on RoBERTa-base architecture
 
 ---
 

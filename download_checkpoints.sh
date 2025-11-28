@@ -11,14 +11,14 @@ fi
 
 mkdir -p model/checkpoints/
 
-curl -s https://biomoqa-classifier.s3.text-analytics.ch/ \
+curl -s https://ipbes-classifier.s3.text-analytics.ch/ \
 | $GREP_CMD -oP '(?<=<Key>)[^<]+' \
 | while read -r file; do
     if [[ $file == checkpoints/* ]]; then
         target_file="model/checkpoints/${file#checkpoints/}"
         mkdir -p "$(dirname "$target_file")"
         echo "Downloading checkpoint: $file -> $target_file"
-        wget -O "$target_file" "https://biomoqa-classifier.s3.text-analytics.ch/$file"
+        wget -O "$target_file" "https://ipbes-classifier.s3.text-analytics.ch/$file"
     else
         echo "Skipping: $file (not in checkpoints directory)"
     fi
