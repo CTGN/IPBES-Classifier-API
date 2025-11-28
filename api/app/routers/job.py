@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import Enum
+from textwrap import dedent
 from typing import List, Optional, Dict
 
 from fastapi import APIRouter, HTTPException
@@ -70,7 +71,7 @@ class JobCreate(BaseModel):
     "/job",
     response_model=dict,
     summary="Create Triage Job",
-    description="""
+    description=dedent("""
     Create a new biodiversity literature triage job with a list of PubMed IDs.
 
     The API will:
@@ -80,7 +81,7 @@ class JobCreate(BaseModel):
     4. Return a job ID for tracking progress
 
     **Note**: Duplicate PMIDs are automatically removed and counted in the job statistics.
-    """,
+    """),
     responses={
         200: {
             "description": "Job created successfully",
@@ -252,7 +253,7 @@ class JobOut(BaseModel):
     "/job/{job_id}",
     response_model=JobOut,
     summary="Get Job Results",
-    description="""
+    description=dedent("""
     Retrieve complete job details including all article scores and metadata.
 
     Returns:
@@ -262,7 +263,7 @@ class JobOut(BaseModel):
     - PMC IDs when full-text was available
 
     **Note**: Articles are returned in the same order they were submitted.
-    """,
+    """),
     responses={
         200: {
             "description": "Job details retrieved successfully",
@@ -409,7 +410,7 @@ class JobStatusResponse(BaseModel):
     "/job/{job_id}/status",
     response_model=JobStatusResponse,
     summary="Get Job Progress",
-    description="""
+    description=dedent("""
     Get detailed progress counters for a triage job.
 
     This endpoint provides real-time tracking of:
@@ -420,7 +421,7 @@ class JobStatusResponse(BaseModel):
     The status field indicates overall job state: 'pending', 'running', 'done', 'partial', or 'failed'.
 
     **Tip**: Poll this endpoint periodically to track job completion.
-    """,
+    """),
     responses={
         200: {
             "description": "Job status retrieved successfully"
