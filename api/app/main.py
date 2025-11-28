@@ -1,4 +1,5 @@
 import logging
+from textwrap import dedent
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
@@ -10,7 +11,7 @@ log = logging.getLogger("uvicorn")
 
 app = FastAPI(
     title=f"{settings.APP_NAME}",
-    description="""
+    description=dedent("""
     ## IPBES biodiversity Literature Triage API
 
     This API provides automated triage and relevance scoring for biodiversity literature from PubMed.
@@ -32,7 +33,7 @@ app = FastAPI(
     ### Rate Limits
 
     Processing time depends on the number of articles and availability of full-text content.
-    """,
+    """),
     version="0.1.0",
     contact={
         "name": "IPBES API Support",
