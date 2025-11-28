@@ -11,9 +11,9 @@ log = logging.getLogger("uvicorn")
 app = FastAPI(
     title=f"{settings.APP_NAME}",
     description="""
-    ## IPBES Biomedical Literature Triage API
+    ## IPBES biodiversity Literature Triage API
 
-    This API provides automated triage and relevance scoring for biomedical literature from PubMed.
+    This API provides automated triage and relevance scoring for biodiversity literature from PubMed.
 
     ### Features
 
@@ -44,7 +44,7 @@ app = FastAPI(
     openapi_tags=[
         {
             "name": "Job",
-            "description": "Operations for creating and managing biomedical literature triage jobs. "
+            "description": "Operations for creating and managing biodiversity literature triage jobs. "
                           "Jobs process batches of PubMed articles and return relevance scores."
         },
         {

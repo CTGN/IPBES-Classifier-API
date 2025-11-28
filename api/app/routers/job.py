@@ -37,7 +37,7 @@ class ArticleIn(BaseModel):
         return int(v)
 
 class JobCreate(BaseModel):
-    """Request model for creating a new biomedical literature triage job."""
+    """Request model for creating a new biodiversity literature triage job."""
     use_fulltext: bool = Field(
         default=True,
         description="Whether to use full-text article content when available. "
@@ -71,7 +71,7 @@ class JobCreate(BaseModel):
     response_model=dict,
     summary="Create Triage Job",
     description="""
-    Create a new biomedical literature triage job with a list of PubMed IDs.
+    Create a new biodiversity literature triage job with a list of PubMed IDs.
 
     The API will:
     1. Validate and deduplicate the submitted PMIDs
