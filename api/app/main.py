@@ -36,11 +36,10 @@ app = FastAPI(
     """),
     version="0.1.0",
     contact={
-        "name": "IPBES API Support",
-        "url": "https://github.com/ipbes",
+        "name": "IPBES API Git",
+        "url": "https://github.com/CTGN/IPBES-Classifier-API",
     },
     license_info={
-        "name": "MIT License",
     },
     openapi_tags=[
         {
