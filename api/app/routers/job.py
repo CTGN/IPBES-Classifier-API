@@ -57,10 +57,10 @@ class JobCreate(BaseModel):
                 {
                     "use_fulltext": True,
                     "article_set": [
-                        {"pmid": 10216320},
-                        {"pmid": 23462742},
-                        {"pmid": 37578046},
-                        {"pmid": 38114491}
+                        {"pmid": 17663714},
+                        {"pmid": 26293953},
+                        {"pmid": 32999073},
+                        {"pmid": 36008872}
                     ]
                 }
             ]
